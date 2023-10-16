@@ -131,8 +131,12 @@ function logIn(event) {
     }
 }
 
-const adminId = document.getElementById("adminId");
-let adminDetails = localStorage.getItem("admin");
-adminDetails = JSON.parse(adminDetails);
-console.log(adminDetails.name)
-adminId.innerText = `Hello ${adminDetails.name}!`;
+// Dashboard on load
+function dashboardApi() {
+    const adminId = document.getElementById("adminId");
+    let adminDetails = localStorage.getItem("admin");
+    adminDetails = JSON.parse(adminDetails);
+    adminId.innerText = `Hello ${adminDetails.name}!`;
+
+    
+}
