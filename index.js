@@ -112,7 +112,7 @@ function logIn(event) {
         .then(response => response.json())
         .then(result => {
             console.log(result)
-            localStorage.setItem("admin", JSON.stringify(result))
+            localStorage.setItem("admin", JSON.stringify(result));
 
             if (result.hasOwnProperty("email")) {
                 location.href = "dashboard.html"
