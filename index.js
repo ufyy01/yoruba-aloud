@@ -122,7 +122,6 @@ function logIn(event) {
                     icon: "info",
                     text: "Login Unsuccessful!",
                     confirmButtonColor: "#2D85DE"
-
                 })
                 getSpin.style.display = "none"
             }
