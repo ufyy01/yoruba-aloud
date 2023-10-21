@@ -137,6 +137,45 @@ function dashboardApi() {
     let adminDetails = localStorage.getItem("admin");
     adminDetails = JSON.parse(adminDetails);
     adminId.innerText = `Hello ${adminDetails.name}!`;
-
-    
 }
+
+
+function studentModal(event) {
+    event.preventDefault;
+    const studentModal = document.querySelector('.mymodal');
+    studentModal.style.display= "block";
+
+    let topDetails = localStorage.getItem("tpThree");
+    topDetails = JSON.parse(topDetails);
+    
+    let studentDetails = document.querySelector('.allstudent');
+    for (let i = 0; i < topDetails.length; i++){
+        studentDetails.innerHTML += `<h5>
+        Name: ${topDetails[i].name} <br> email: ${topDetails[i].email} <br> 
+        Phone number: ${topDetails[i]['phone_number']} <br> 
+        Position: ${topDetails[i].position}</td> <br> 
+        Total Score: ${topDetails[i]['total_score']}
+    </h5>`
+    }  
+}
+function closeDashModal() {
+    const studentModal = document.querySelector('.mymodal');
+    studentModal.style.display= "none";
+}
+
+//get all student details to dashboard
+let allStudentDts = localStorage.getItem("allStudents");
+allStudentDts = JSON.parse(allStudentDts);
+    for (let i=0; i <= allStudentDts.length; i++) {
+        const studentTable = document.getElementById('table-id');
+        studentTable.innerHTML += `<tr>
+        <td>${allStudentDts[i].name}</td>
+        <td>${allStudentDts[i].email}</td>
+        <td>${allStudentDts[i]['phone_number']}</td>
+        <td>${allStudentDts[i].position}</td>
+        <td>${allStudentDts[i]['total_score']}</td>
+        </tr>`
+    }
+   
+    
+
