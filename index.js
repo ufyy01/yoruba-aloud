@@ -147,15 +147,37 @@ function studentModal(event) {
 
     let topDetails = localStorage.getItem("tpThree");
     topDetails = JSON.parse(topDetails);
+    console.log(topDetails);
     
     let studentDetails = document.querySelector('.allstudent');
     for (let i = 0; i < topDetails.length; i++){
-        studentDetails.innerHTML += `<h5>
-        Name: ${topDetails[i].name} <br> email: ${topDetails[i].email} <br> 
-        Phone number: ${topDetails[i]['phone_number']} <br> 
-        Position: ${topDetails[i].position}</td> <br> 
-        Total Score: ${topDetails[i]['total_score']}
-    </h5>`
+        studentDetails.innerHTML += `
+            <div class="search-card">
+            <div class="d-flex justify-content-between">
+            <h5 class="mt-3">Image:</h5>
+            <img src=${topDetails[i].image} alt="img" class="w-25"/>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Name:</h5>
+            <p>${topDetails[i].name}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Email:</h5>
+            <p>${topDetails[i].email}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Phone Number:</h5>
+            <p>${topDetails[i].phone_number}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Position:</h5>
+            <p>${topDetails[i].position}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Total Score:</h5>
+            <p>${topDetails[i].total_score}</p>
+            </div>
+        </div>`
     }  
 }
 function closeDashModal() {
@@ -176,6 +198,5 @@ allStudentDts = JSON.parse(allStudentDts);
         <td>${allStudentDts[i]['total_score']}</td>
         </tr>`
     }
-   
     
 
