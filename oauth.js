@@ -4,7 +4,7 @@
     adminDetails = JSON.parse(adminDetails);
     
     const bearerToken = adminDetails.token;
-  
+
     const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/admin_dashboardapi"; 
 
     fetch(url, {
@@ -65,4 +65,4 @@ fetch(url2, {
 .then(data => {
     const allStudents = localStorage.setItem("allStudents",JSON.stringify(data));
 })
-.catch(error => console.error('Error:', error));
+.catch(error => console.error('Error::', error));
