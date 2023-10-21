@@ -132,19 +132,20 @@ function logIn(event) {
 }
 
 // Dashboard on load
+
+const adminId = document.getElementById("adminId");
+let adminDetails = localStorage.getItem("admin");
+adminDetails = JSON.parse(adminDetails);
+const bearerToken = adminDetails.token;
+
+
 function dashboardApi() {
     const getModal = document.querySelector('.pagemodal');
     getModal.style.display= "block";
     
-    const adminId = document.getElementById("adminId");
-    let adminDetails = localStorage.getItem("admin");
-    adminDetails = JSON.parse(adminDetails);
     adminId.innerText = `Hello ${adminDetails.name}!`;
 
     //Get dashboard details
-    
-    const bearerToken = adminDetails.token;
-
     const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/admin_dashboardapi"; 
 
     fetch(url, {
@@ -176,69 +177,6 @@ function dashboardApi() {
     })
     .catch(error => console.error('Error:', error));
     
-        //Get top 3 students
-    const url1 = "https://pluralcodesandbox.com/yorubalearning/api/admin/top_three_students"; 
-
-    fetch(url1, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${bearerToken}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        const topThree = localStorage.setItem("tpThree",JSON.stringify(data));
-    })
-    .catch(error => console.error('Error:', error));
-
-
-
-    function studentModal(event) {
-        event.preventDefault;
-        const studentModal = document.querySelector('.mymodal');
-        studentModal.style.display= "block";
-    
-        let topDetails = localStorage.getItem("tpThree");
-        topDetails = JSON.parse(topDetails);
-        console.log(topDetails);
-        
-        let studentDetails = document.querySelector('.allstudent');
-        for (let i = 0; i < topDetails.length; i++){
-            studentDetails.innerHTML += `
-                <div class="search-card">
-                <div class="d-flex justify-content-between">
-                <h5 class="mt-3">Image:</h5>
-                <img src=${topDetails[i].image} alt="img" class="w-25"/>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Name:</h5>
-                <p>${topDetails[i].name}</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Email:</h5>
-                <p>${topDetails[i].email}</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Phone Number:</h5>
-                <p>${topDetails[i].phone_number}</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Position:</h5>
-                <p>${topDetails[i].position}</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Total Score:</h5>
-                <p>${topDetails[i].total_score}</p>
-                </div>
-            </div>`
-        }  
-    }
-    function closeDashModal() {
-        const studentModal = document.querySelector('.mymodal');
-        studentModal.style.display= "none";
-    }
-    
     //get all students
     const url2 = "https://pluralcodesandbox.com/yorubalearning/api/admin/get_all_students"; 
     
@@ -252,23 +190,95 @@ function dashboardApi() {
     .then(response => response.json())
     .then(result => {
         result = localStorage.setItem("allStudents",JSON.stringify(result));
+
         //get all student details to dashboard
+
         let allStudentDts = localStorage.getItem("allStudents");
         allStudentDts = JSON.parse(allStudentDts);
-        for (let i=0; i <= allStudentDts.length; i++) {
-            const studentTable = document.getElementById('table-id');
+        const studentTable = document.getElementById('table-id');
+        if (allStudentDts.length === 0) {
+            studentTable.innerHTML = "No Records Found";
+            getModal.style.display= "none";
+            
+        } else {
+            getModal.style.display= "none";
+
+            allStudentDts.map(item => {
             studentTable.innerHTML += `<tr>
-            <td>${allStudentDts[i].name}</td>
-            <td>${allStudentDts[i].email}</td>
-            <td>${allStudentDts[i]['phone_number']}</td>
-            <td>${allStudentDts[i].position}</td>
-            <td>${allStudentDts[i]['total_score']}</td>
+            <td>${item.name}</td>
+            <td>${item.email}</td>
+            <td>${item.phone_number}</td>
+            <td>${item.position}</td>
+            <td>${item.total_score}</td>
             </tr>`
-        }   
+        })} 
     })
-    .catch(error => console.error('Error::', error));
+    .catch(error => console.error('Error:', error));
 }
 
+   //Get top 3 students
+    function studentModal(event) {
+        event.preventDefault;
+        const studentModal = document.querySelector('.mymodal');
+        studentModal.style.display= "block";
+
+        const url1 = "https://pluralcodesandbox.com/yorubalearning/api/admin/top_three_students"; 
+
+        fetch(url1, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${bearerToken}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(result => {
+            const topThree = localStorage.setItem("tpThree",JSON.stringify(result));
+            let topDetails = localStorage.getItem("tpThree");
+            topDetails = JSON.parse(topDetails);
+            let studentDetails = document.querySelector('.allstudent');
+
+            if (result.length === 0) {
+                studentDetails.innerHTML = "No Records Found";
+            } else {
+                result.map(item => {
+                studentDetails.innerHTML += `
+                <div class="search-card">
+                <div class="d-flex justify-content-between">
+                <h5 class="mt-3">Image:</h5>
+                <img src=${item.image} alt="img" class="w-25"/>
+                </div>
+                <div class="d-flex justify-content-between">
+                <h5>Name:</h5>
+                <p>${item.name}</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                <h5>Email:</h5>
+                <p>${item.email}</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                <h5>Phone Number:</h5>
+                <p>${item.phone_number}</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                <h5>Position:</h5>
+                <p>${item.position}</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                <h5>Total Score:</h5>
+                <p>${item.total_score}</p>
+                </div>
+            </div>`
+                })
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    
+    }
+    function closeDashModal() {
+        const studentModal = document.querySelector('.mymodal');
+        studentModal.style.display= "none";
+    }
 
 
 
