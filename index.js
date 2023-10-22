@@ -290,6 +290,9 @@ function tabledataApi() {
 
 function dashboardApiCopy() {
 
+    const getModal = document.querySelector('.pagemodal');
+    getModal.style.display= "block";
+
     adminId.innerText = `Hello ${adminDetails.name}!`;
 
     //Get dashboard details
@@ -320,6 +323,7 @@ function dashboardApiCopy() {
         ];
         getStudents.innerText = data['total_number_of_students'
         ];
+        getModal.style.display= "none";
 
     })
     .catch(error => console.error('Error:', error));
@@ -340,7 +344,7 @@ function createCategory(event) {
     const catImgFile = catImg.files[0];
 
 
-    if (catName === '' || catImg === '') {
+    if (catName === '') {
         Swal.fire({
             icon: 'info',
             text: 'All fields are Required!',
@@ -361,7 +365,7 @@ function createCategory(event) {
             headers: getHeader,
             body: catData
         }
-        console.log(getHeader)
+
         const url = 'https://pluralcodesandbox.com/yorubalearning/api/admin/create_category';
 
         fetch(url, catMethod)
@@ -374,6 +378,10 @@ function createCategory(event) {
                     text: `${result.message}`,
                     confirmButtonColor: "#2D85DE"
                 })
+                setTimeout(() => {
+                    location.href = "index.html"
+                }, 3000)
+
                 getSpin.style.display = "none"
             }
             else {
@@ -393,9 +401,14 @@ function createCategory(event) {
 }
 
 //category list scroll
+function getCategoryList() {
+    
+}
 const scrollObj = document.querySelector('.scroll-object');
 
-const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/categorylist_dropdown"; 
+let data = [];
+
+const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/category_list"; 
 
     fetch(url, {
         method: 'GET',
@@ -409,51 +422,60 @@ const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/categorylist
         const catResult = localStorage.setItem("catResult", JSON.stringify(result))
         let getCatResult = localStorage.getItem("catResult");
         getCatResult = JSON.parse(getCatResult);
-        getCatResult.map(item => {
-            scrollObj.innerHTML += `
-            <div class="search-card">
-            <a href="details.html"><img src="${item.parent_category.image}" alt="category image" /></a>
-            <h2>${item.parent_category.name}</h2>
-            <button type="button" class="ch-btn" onclick="updateCat()">Update</button>
-            <button type="button" class="ch-btn" onclick="deleteCat()">Delete</button>
-            </div>`
-        })
+
+        if (getCatResult.length == 0) {
+            scrollObj.innerHTML = "No category found"
+        } else {
+            result.map(item => {
+                data += `
+                <div class="search-card">
+                <a href="details.html"><img src="${item.image}" alt="category image" /></a>
+                <h2 class="my-3">${item.name}</h2>
+                <div class="text-right">
+                <button type="button" class="update-button" onclick="modalBox(${item.id})">Update</button>
+                <button type="button" class="delete-button" onclick="deleteCat(${item.id})">Delete</button>
+                </div>
+                
+                </div>`
+
+                scrollObj.innerHTML = data;
+            })
+        }
+        
     })
     .catch(error => {
         console.log('Error:', error)
     })
 
 
-    function updateCat() {
-        let getCatResult = localStorage.getItem("catResult");
-        getCatResult = JSON.parse(getCatResult);
+    function modalBox(catId) {
+        const showModal = document.getElementById("my-modal3");
+        showModal.style.display = "block"
 
-        console.log(getCatResult)
-        console.log(getCatResult[0].parent_category)
-
-        const catData = new FormData();
-        catData.append("name", getCatResult.parent_category.name);
-        catData.append("image", getCatResult.parent_category.image);
-        catData.append("category_id", getCatResult.parent_category.id);
         
         const getHeader = new Headers();
         getHeader.append('Authorization', `Bearer ${bearerToken}`);
         
 
         const catMethod = {
-            method: 'POST',
-            headers: getHeader,
-            body: catData
+            method: 'GET',
+            headers: getHeader
         }
-        console.log(getHeader)
-        const url = 'https://pluralcodesandbox.com/yorubalearning/api/admin/update_category';
+        
+        const url = `https://pluralcodesandbox.com/yorubalearning/api/admin/get_details?category_id=${catId}`;
 
         fetch(url, catMethod)
         .then(response => response.json())
         .then(result => {
             console.log(result);
+            const updateName = document.getElementById('updateName')
         })
         .catch(error => {
             console.log('Error:', error)
         })
+    }
+
+    function closeDashModal() {
+        const showModal = document.getElementById('my-modal3');
+        showModal.style.display = "none";
     }
