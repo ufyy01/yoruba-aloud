@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="lineawesome/css/line-awesome.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body onload="dashboardApiCopy()">
 
    <input type="checkbox" id="nav-toggle">
     <div class="sidebar bg-dark">
@@ -119,10 +119,10 @@
                 <h2 class="text-center mt-5">Add Categories</h2>
                 <form id="catForm">
                     
-                    <label for="Email" class="font-mulish font-size-14 font-weight-600">Categories</label>
+                    <label for="cat" class="font-mulish font-size-14 font-weight-600">Categories</label>
                     <input type="text" name="cat" id="cat" class="input mb-3" placeholder="Enter Categories Here">
 
-                    <label for="Email" class="font-mulish font-size-14 font-weight-600">Category Images</label>
+                    <label for="imcat" class="font-mulish font-size-14 font-weight-600">Category Images</label>
                     <input type="file" name="image" id="imcat" class="input mb-3" placeholder="Enter Categories Here">
     
                     <button class="button button-blue font-weight-700" type="button" onclick="createCategory(event)">
@@ -137,14 +137,13 @@
                    <div class="scroll-bg">
                         <div class="scroll-div">
                            <div class="scroll-object">
-                               
                            </div>
                         </div>
                    </div>
                </div>
            </div>
 
-            <div id="my-modal3" class="mymodal">
+            <div id="my-modal3" class="mymodal3">
                <div class="modal-content">
                    <div class="modal-header">
                     <h2>Update Category</h2>
