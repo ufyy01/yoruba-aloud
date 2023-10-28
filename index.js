@@ -177,69 +177,69 @@ function dashboardApi() {
     .catch(error => console.error('Error:', error));
 }
 
-   //Get top 3 students
-    function studentModal(event) {
-        event.preventDefault;
-        const studentModal = document.querySelector('.mymodal');
-        studentModal.style.display= "block";
+//Get top 3 students
+function studentModal(event) {
+    event.preventDefault;
+    const studentModal = document.querySelector('.mymodal');
+    studentModal.style.display= "block";
 
-        const url1 = "https://pluralcodesandbox.com/yorubalearning/api/admin/top_three_students"; 
+    const url1 = "https://pluralcodesandbox.com/yorubalearning/api/admin/top_three_students"; 
 
-        fetch(url1, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${bearerToken}`,
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(result => {
-            const topThree = localStorage.setItem("tpThree",JSON.stringify(result));
-            let topDetails = localStorage.getItem("tpThree");
-            topDetails = JSON.parse(topDetails);
-            let studentDetails = document.querySelector('.allstudent');
+    fetch(url1, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${bearerToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        const topThree = localStorage.setItem("tpThree",JSON.stringify(result));
+        let topDetails = localStorage.getItem("tpThree");
+        topDetails = JSON.parse(topDetails);
+        let studentDetails = document.querySelector('.allstudent');
 
-            if (result.length === 0) {
-                studentDetails.innerHTML = "No Records Found";
-            } else {
-                result.map(item => {
-                studentDetails.innerHTML += `
-                <div class="search-card">
-                <div class="d-flex justify-content-between">
-                <h5 class="mt-3">Image:</h5>
-                <img src=${item.image} alt="img" class="w-25"/>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Name:</h5>
-                <p>${item.name}</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Email:</h5>
-                <p>${item.email}</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Phone Number:</h5>
-                <p>${item.phone_number}</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Position:</h5>
-                <p>${item.position}</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                <h5>Total Score:</h5>
-                <p>${item.total_score}</p>
-                </div>
-            </div>`
-                })
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    
-    }
-    function closeDashModal() {
-        const studentModal = document.querySelector('.mymodal');
-        studentModal.style.display= "none";
-    }
+        if (result.length === 0) {
+            studentDetails.innerHTML = "No Records Found";
+        } else {
+            result.map(item => {
+            studentDetails.innerHTML += `
+            <div class="search-card">
+            <div class="d-flex justify-content-between">
+            <h5 class="mt-3">Image:</h5>
+            <img src=${item.image} alt="img" class="w-25"/>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Name:</h5>
+            <p>${item.name}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Email:</h5>
+            <p>${item.email}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Phone Number:</h5>
+            <p>${item.phone_number}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Position:</h5>
+            <p>${item.position}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+            <h5>Total Score:</h5>
+            <p>${item.total_score}</p>
+            </div>
+        </div>`
+            })
+        }
+    })
+    .catch(error => console.error('Error:', error));
+
+}
+function closeDashModal() {
+    const studentModal = document.querySelector('#dash-modal');
+    studentModal.style.display= "none";
+}
 
 
 function tabledataApi() {
@@ -285,50 +285,6 @@ function tabledataApi() {
     })
     .catch(error => console.error('Error:', error));
 }
-
-//category page
-
-function dashboardApiCopy() {
-
-    const getModal = document.querySelector('.pagemodal');
-    getModal.style.display= "block";
-
-    adminId.innerText = `Hello ${adminDetails.name}!`;
-
-    //Get dashboard details
-    const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/admin_dashboardapi"; 
-
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${bearerToken}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        const getCategory = document.getElementById('category');
-        const getLearnmat = document.getElementById('learnmat');
-        const getSubcat = document.getElementById('subCat');
-        const getQuiz = document.getElementById('quiz');
-        const getStudents = document.getElementById('student');
-
-        getCategory.innerText = data['total_number_of_categories'
-        ];
-        getLearnmat.innerText = data['total_number_of_learningmaterial'
-        ];
-        getSubcat.innerText = data['total_number_of_subcategories'
-        ];
-        getQuiz.innerText = data['total_number_of_quize'
-        ];
-        getStudents.innerText = data['total_number_of_students'
-        ];
-        getModal.style.display= "none";
-
-    })
-    .catch(error => console.error('Error:', error));
-}
-
 
 
 //Create category
@@ -379,8 +335,8 @@ function createCategory(event) {
                     confirmButtonColor: "#2D85DE"
                 })
                 setTimeout(() => {
-                    location.href = "index.html"
-                }, 3000)
+                    location.reload();
+                }, 2000)
 
                 getSpin.style.display = "none"
             }
@@ -402,13 +358,11 @@ function createCategory(event) {
 
 //category list scroll
 function getCategoryList() {
-    
-}
-const scrollObj = document.querySelector('.scroll-object');
+    const scrollObj = document.querySelector('.scroll-object');
 
-let data = [];
+    let data = [];
 
-const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/category_list"; 
+    const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/category_list"; 
 
     fetch(url, {
         method: 'GET',
@@ -419,17 +373,14 @@ const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/category_lis
     })
     .then(response => response.json())
     .then(result => {
-        const catResult = localStorage.setItem("catResult", JSON.stringify(result))
-        let getCatResult = localStorage.getItem("catResult");
-        getCatResult = JSON.parse(getCatResult);
-
-        if (getCatResult.length == 0) {
+        
+        if (result.length == 0) {
             scrollObj.innerHTML = "No category found"
         } else {
             result.map(item => {
                 data += `
                 <div class="search-card">
-                <a href="details.html"><img src="${item.image}" alt="category image" /></a>
+                <a href="details.html?id=${item.id}&name=${item.name}"><img src="${item.image}" alt="category image"/></a>
                 <h2 class="my-3">${item.name}</h2>
                 <div class="text-right">
                 <button type="button" class="update-button" onclick="modalBox(${item.id})">Update</button>
@@ -439,6 +390,7 @@ const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/category_lis
                 </div>`
 
                 scrollObj.innerHTML = data;
+                
             })
         }
         
@@ -446,36 +398,372 @@ const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/category_lis
     .catch(error => {
         console.log('Error:', error)
     })
+}
 
 
-    function modalBox(catId) {
-        const showModal = document.getElementById("my-modal3");
-        showModal.style.display = "block"
+// Update button
+let globalId;
 
-        
+function modalBox(catId) {
+    const showModal = document.getElementById("my-modal");
+    showModal.style.display = "block"
+
+    globalId = catId;   
+
+    console.log(globalId)
+    
+    const getUpName = document.getElementById("updateName");
+
+    const getHeader = new Headers();
+    getHeader.append('Authorization', `Bearer ${bearerToken}`);
+    
+
+    const catMethod = {
+        method: 'GET',
+        headers: getHeader
+    }
+    
+    const url = `https://pluralcodesandbox.com/yorubalearning/api/admin/get_details?category_id=${catId}`;
+
+    fetch(url, catMethod)
+    .then(response => response.json())
+    .then(result => {
+        getUpName.setAttribute("value", `${result.name}`);
+    })
+    .catch(error => {
+        console.log('Error:', error)
+    })
+}
+
+function closeModal3() {
+        const showModal = document.getElementById('my-modal');
+        showModal.style.display = "none";
+}
+
+function updateCategory(event) {
+        event.preventDefault();
+        const getSpin = document.querySelector(".spin2");
+        getSpin.style.display = "inline-block";
+        const catName = document.getElementById("updateName").value;
+        const catImage = document.getElementById("updateImage").files[0];
+        if (catName === "") {
+            Swal.fire({
+                icon: 'info',
+                text: 'All Fields Required!',
+                confirmButtonColor: '#2D85DE'
+            })
+            getSpin.style.display = "none";
+        }
+        else {
+            const dashHeader = new Headers();
+            dashHeader.append("Authorization", `Bearer ${bearerToken}`);
+
+            const catData = new FormData();
+            catData.append("name", catName);
+            catData.append("image", catImage);
+            catData.append("category_id", globalId)
+            
+            const dashMethod = {
+                method: 'POST',
+                headers: dashHeader,
+                body: catData
+            }
+            const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/update_category";
+            fetch(url, dashMethod)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                if (result.status === "success") {
+                    Swal.fire({
+                        icon: 'success',
+                        text: `${result.message}`,
+                        confirmButtonColor: '#2D85DE'
+                    })
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000)
+                }
+                else {
+                    Swal.fire({
+                        icon: 'info',
+                        text: `${result.status}`,
+                    })
+                    getSpin.style.display = "none";
+                }
+            })
+            .catch(error => console.log('error', error));
+        }
+}
+
+// Delete button
+
+function deleteCat(catIdDel) {
+    Swal.fire({
+        icon: 'question',
+        text: 'Are you sure you want to delete category?',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        confirmButtonColor: '#2D85DE'
+    })
+    .then(result => {
+        if (result.isConfirmed){
+
+            const dashHeader = new Headers();
+            dashHeader.append("Authorization", `Bearer ${bearerToken}`);
+
+            const dashMethod = {
+                method: 'GET',
+                headers: dashHeader,
+            }
+
+            const url = `https://pluralcodesandbox.com/yorubalearning/api/admin/delete_category/${catIdDel}`;
+
+            fetch(url, dashMethod)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                if (result.status === "success") {
+                    Swal.fire({
+                        icon: 'success',
+                        text: `${result.message}`,
+                        confirmButtonColor: '#2D85DE'
+                    })
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000)
+                }
+                else {
+                    Swal.fire({
+                        icon: 'info',
+                        text: `${result.status}`,
+                        confirmButtonColor: '#2D85DE'
+                    })
+                }
+            })
+            .catch(error => console.log('error', error));
+            }
+        } )
+ 
+}
+
+//Category Detail Page
+
+function getNameDetails(){
+    const params = new URLSearchParams(window.location.search);
+    let getName = params.get('name');
+    console.log(getName);
+    let catName = document.querySelector('.det');
+    catName.innerHTML =  getName;
+}
+
+function subCategory(event) {
+    event.preventDefault;
+
+    const params = new URLSearchParams(window.location.search);
+    let getId = params.get('id');
+
+    const getSpin = document.querySelector('.spin');
+    getSpin.style.display = "inline-block";
+
+    const subCatName = document.getElementById('subCatName').value;
+    const subCatImg = document.getElementById('subCatImg').files[0];
+
+
+    if (subCatName === '') {
+        Swal.fire({
+            icon: 'info',
+            text: 'All fields are Required!',
+            confirmButtonColor: '#2D85DE'
+        })
+
+        getSpin.style.display = "none";
+    } else {
         const getHeader = new Headers();
         getHeader.append('Authorization', `Bearer ${bearerToken}`);
         
+        const catData = new FormData();
+        catData.append("name", subCatName);
+        catData.append("image", subCatImg);
+        catData.append("category_id", getId)
 
         const catMethod = {
-            method: 'GET',
-            headers: getHeader
+            method: 'POST',
+            headers: getHeader,
+            body: catData
         }
-        
-        const url = `https://pluralcodesandbox.com/yorubalearning/api/admin/get_details?category_id=${catId}`;
+
+        const url = 'https://pluralcodesandbox.com/yorubalearning/api/admin/create_subcategory';
 
         fetch(url, catMethod)
         .then(response => response.json())
         .then(result => {
-            console.log(result);
-            const updateName = document.getElementById('updateName')
+            if (result.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    text: `${result.message}`,
+                    confirmButtonColor: "#2D85DE"
+                })
+                setTimeout(() => {
+                    location.reload();
+                }, 2000)
+
+                getSpin.style.display = "none"
+            }
+            else {
+                Swal.fire({
+                    icon: 'info',
+                    text: `${result.message.image}`,
+                    confirmButtonColor: "#2D85DE"
+                })
+                getSpin.style.display = "none"
+            }
         })
         .catch(error => {
-            console.log('Error:', error)
+            console.error('Error:', error);
         })
     }
+}
 
-    function closeDashModal() {
-        const showModal = document.getElementById('my-modal3');
-        showModal.style.display = "none";
+// subcategory list
+
+function getSubcategoryList() {
+
+    const params = new URLSearchParams(window.location.search);
+    let getId = params.get('id');
+
+    const subcatRow = document.querySelector('div.subItems');
+
+    let data = [];
+
+    const url = `https://pluralcodesandbox.com/yorubalearning/api/admin/category_details/${getId}`; 
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${bearerToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.length == 0) {
+            subcatRow.innerHTML = "No subcategory found"
+        } else {
+            result.map(item => {
+                data += `
+                <div class="search-card">
+                <img src="${item.image}" alt="category image"/>
+                <h2 class="my-3">${item.name}</h2>
+                <div class="text-right">
+                <button type="button" class="update-button" onclick="modalSubcat(${item.id})">Update</button>
+                <button type="button" class="delete-button" onclick="deleteSubcat(${item.id})">Delete</button>
+                </div>
+                
+                </div>`
+
+                subcatRow.innerHTML = data;
+            })
+        }
+        
+    })
+    .catch(error => {
+        console.log('Error:', error)
+    })
+}
+
+let globalSubId;
+//Modal to update category liist
+function modalSubcat(subcatId) {
+    globalSubId = subcatId;
+
+    const showModal = document.getElementById("my-modal-mode");
+    showModal.style.display = "block"
+    
+    const updateSubName = document.getElementById("updateSubName");
+
+    const getHeader = new Headers();
+    getHeader.append('Authorization', `Bearer ${bearerToken}`);
+    
+
+    const catMethod = {
+        method: 'GET',
+        headers: getHeader
     }
+    
+    const url = `https://pluralcodesandbox.com/yorubalearning/api/admin/get_details?subcategory_id=${subcatId}`;
+
+    fetch(url, catMethod)
+    .then(response => response.json())
+    .then(result => {
+        updateSubName.setAttribute("value", `${result.name}`);
+    })
+    .catch(error => {
+        console.log('Error:', error)
+    })
+}
+
+//Close update subcategory modal 
+function closeModalMode() {
+    const showModal = document.getElementById("my-modal-mode");
+    showModal.style.display = "none"
+}
+
+//Updating subcategory
+function updateSubCategory(event) {
+    event.preventDefault;
+
+    const getSpin = document.querySelector(".spin2");
+        getSpin.style.display = "inline-block";
+
+        const updateSubName = document.getElementById("updateSubName").value;
+        const updateSubImage = document.getElementById("updateSubImage").files[0];
+
+        if (catName === "") {
+            Swal.fire({
+                icon: 'info',
+                text: 'All Fields Required!',
+                confirmButtonColor: '#2D85DE'
+            })
+            getSpin.style.display = "none";
+        }
+        else {
+            const dashHeader = new Headers();
+            dashHeader.append("Authorization", `Bearer ${bearerToken}`);
+
+            const subcatData = new FormData();
+            catData.append("name", updateSubName);
+            catData.append("image", updateSubImage);
+            catData.append("subcategory_id", globalSubId)
+            
+            const dashMethod = {
+                method: 'POST',
+                headers: dashHeader,
+                body: subcatData
+            }
+            const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/update_subcategory";
+            
+            fetch(url, dashMethod)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                if (result.status === "success") {
+                    Swal.fire({
+                        icon: 'success',
+                        text: `${result.message}`,
+                        confirmButtonColor: '#2D85DE'
+                    })
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000)
+                }
+                else {
+                    Swal.fire({
+                        icon: 'info',
+                        text: `${result.status}`,
+                    })
+                    getSpin.style.display = "none";
+                }
+            })
+            .catch(error => console.log('error', error));
+        }
+}
