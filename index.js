@@ -530,7 +530,7 @@ function deleteCat(catIdDel) {
                     })
                     setTimeout(() => {
                         location.reload();
-                    }, 2000)
+                    }, 4000)
                 }
                 else {
                     Swal.fire({
@@ -552,7 +552,7 @@ function getNameDetails(){
     const params = new URLSearchParams(window.location.search);
     let getName = params.get('name');
     let catName = document.querySelector('.det');
-    catName.innerHTML =  getName;
+    catName.innerText =  getName;
 }
 
 function subCategory(event) {
@@ -772,4 +772,14 @@ function updateSubCategory(event) {
             })
             .catch(error => console.log('error', error));
         }
+}
+
+function gotoLoginPage(event) {
+    event.preventDefault;
+    location.href = "index.html";
+}
+
+function logout() {
+    localStorage.clear();
+    location.href= "index.html";
 }

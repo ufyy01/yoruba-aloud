@@ -817,6 +817,7 @@ hr {
 
 .logspan {
     color: #fff;
+    cursor: pointer;
 }
 
 .boxInput, .boxInput2 {
