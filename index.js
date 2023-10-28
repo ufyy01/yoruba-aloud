@@ -551,7 +551,6 @@ function deleteCat(catIdDel) {
 function getNameDetails(){
     const params = new URLSearchParams(window.location.search);
     let getName = params.get('name');
-    console.log(getName);
     let catName = document.querySelector('.det');
     catName.innerHTML =  getName;
 }
@@ -627,6 +626,8 @@ function subCategory(event) {
 // subcategory list
 
 function getSubcategoryList() {
+    const getModal = document.querySelector('.pagemodal');
+    getModal.style.display= "block";
 
     const params = new URLSearchParams(window.location.search);
     let getId = params.get('id');
@@ -648,6 +649,8 @@ function getSubcategoryList() {
     .then(result => {
         if (result.length == 0) {
             subcatRow.innerHTML = "No subcategory found"
+            getModal.style.display= "none";
+
         } else {
             result.map(item => {
                 data += `
@@ -662,6 +665,7 @@ function getSubcategoryList() {
                 </div>`
 
                 subcatRow.innerHTML = data;
+                getModal.style.display= "none";
             })
         }
         
@@ -675,7 +679,7 @@ let globalSubId;
 //Modal to update category liist
 function modalSubcat(subcatId) {
     globalSubId = subcatId;
-
+    console.log(globalSubId);
     const showModal = document.getElementById("my-modal-mode");
     showModal.style.display = "block"
     
@@ -711,6 +715,8 @@ function closeModalMode() {
 //Updating subcategory
 function updateSubCategory(event) {
     event.preventDefault;
+
+    console.log(globalSubId);
 
     const getSpin = document.querySelector(".spin2");
         getSpin.style.display = "inline-block";
@@ -752,9 +758,9 @@ function updateSubCategory(event) {
                         text: `${result.message}`,
                         confirmButtonColor: '#2D85DE'
                     })
-                    setTimeout(() => {
-                        location.reload();
-                    }, 3000)
+                    // setTimeout(() => {
+                    //     location.href = "details.html";
+                    // }, 3000)
                 }
                 else {
                     Swal.fire({
