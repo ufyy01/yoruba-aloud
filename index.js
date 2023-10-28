@@ -632,7 +632,7 @@ function getSubcategoryList() {
     const params = new URLSearchParams(window.location.search);
     let getId = params.get('id');
 
-    const subcatRow = document.querySelector('div.subItems');
+    const subcatRow = document.querySelector('div.row');
 
     let data = [];
 
@@ -647,21 +647,21 @@ function getSubcategoryList() {
     })
     .then(response => response.json())
     .then(result => {
-        if (result.length == 0) {
-            subcatRow.innerHTML = "No subcategory found"
+        if (result.length === 0) {
+            subcatRow.innerHTML = `<h2 class="text-center">No subcategory found!</h2>`;
             getModal.style.display= "none";
 
         } else {
             result.map(item => {
                 data += `
+                <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
                 <div class="search-card">
-                <img src="${item.image}" alt="category image"/>
-                <h2 class="my-3">${item.name}</h2>
+                <img src="${item.image}" alt="category image" class="img-fluid"/>
+                <p class="my-3">${item.name}</p>
                 <div class="text-right">
                 <button type="button" class="update-button" onclick="modalSubcat(${item.id})">Update</button>
-                <button type="button" class="delete-button" onclick="deleteSubcat(${item.id})">Delete</button>
                 </div>
-                
+                </div>
                 </div>`
 
                 subcatRow.innerHTML = data;
@@ -714,7 +714,7 @@ function closeModalMode() {
 
 //Updating subcategory
 function updateSubCategory(event) {
-    event.preventDefault;
+    event.preventDefault();
 
     console.log(globalSubId);
 
@@ -724,7 +724,7 @@ function updateSubCategory(event) {
         const updateSubName = document.getElementById("updateSubName").value;
         const updateSubImage = document.getElementById("updateSubImage").files[0];
 
-        if (catName === "") {
+        if (updateSubName === "") {
             Swal.fire({
                 icon: 'info',
                 text: 'All Fields Required!',
@@ -737,9 +737,9 @@ function updateSubCategory(event) {
             dashHeader.append("Authorization", `Bearer ${bearerToken}`);
 
             const subcatData = new FormData();
-            catData.append("name", updateSubName);
-            catData.append("image", updateSubImage);
-            catData.append("subcategory_id", globalSubId)
+            subcatData.append("name", updateSubName);
+            subcatData.append("image", updateSubImage);
+            subcatData.append("subcategory_id", globalSubId)
             
             const dashMethod = {
                 method: 'POST',
@@ -758,9 +758,9 @@ function updateSubCategory(event) {
                         text: `${result.message}`,
                         confirmButtonColor: '#2D85DE'
                     })
-                    // setTimeout(() => {
-                    //     location.href = "details.html";
-                    // }, 3000)
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000)
                 }
                 else {
                     Swal.fire({
