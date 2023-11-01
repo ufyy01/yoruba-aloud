@@ -120,7 +120,7 @@ function logIn(event) {
             else {
                 Swal.fire({
                     icon: "info",
-                    text: "Login Unsuccessful!",
+                    text: `${result.message}`,
                     confirmButtonColor: "#2D85DE"
                 })
                 getSpin.style.display = "none"
@@ -259,21 +259,16 @@ function tabledataApi() {
     })
     .then(response => response.json())
     .then(result => {
-        result = localStorage.setItem("allStudents",JSON.stringify(result));
-
-        //get all student details to dashboard
-
-        let allStudentDts = localStorage.getItem("allStudents");
-        allStudentDts = JSON.parse(allStudentDts);
+      
         const studentTable = document.getElementById('table-id');
-        if (allStudentDts.length === 0) {
+        if (result.length === 0) {
             studentTable.innerHTML = "No Records Found";
             getModal.style.display= "none";
             
         } else {
             getModal.style.display= "none";
 
-            allStudentDts.map(item => {
+            result.map(item => {
             studentTable.innerHTML += `<tr>
             <td>${item.name}</td>
             <td>${item.email}</td>
@@ -773,6 +768,225 @@ function updateSubCategory(event) {
             .catch(error => console.log('error', error));
         }
 }
+
+// updating admin details
+function upDateAdmin(event) {
+    event.preventDefault();
+    const getSpin = document.querySelector(".spin2");
+    getSpin.style.display = "inline-block";
+    const updateName = document.getElementById("updateName").value;
+    const updateEmail = document.getElementById("updateEmail").value;
+    if (updateName === "" || updateEmail === "") {
+        Swal.fire({
+            icon: 'info',
+            text: 'All Fields Required!',
+            confirmButtonColor: '#2D85DE'
+        })
+        getSpin.style.display = "none";
+    }
+    else {
+        const getToken = localStorage.getItem("admin");
+        const myToken = JSON.parse(getToken);
+        const token = myToken.token;
+        const dashHeader = new Headers();
+        dashHeader.append("Authorization", `Bearer ${token}`);
+        const catData = new FormData();
+        catData.append("name", updateName);
+        catData.append("email", updateEmail);
+        const dashMethod = {
+            method: 'POST',
+            headers: dashHeader,
+            body: catData
+        }
+        const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/admin_update_profile";
+        fetch(url, dashMethod)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            if (result.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#2D85DE'
+                })
+                setTimeout(() => {
+                    localStorage.clear();
+                    location.href = "index.html"
+                }, 3000)
+            }
+            else {
+                Swal.fire({
+                    icon: 'info',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#2D85DE'
+                })
+                getSpin.style.display = "none";
+            }
+        })
+        .catch(error => console.log('error', error));
+    }
+}
+function upDatePassword(event) {
+    event.preventDefault();
+    const getSpin = document.querySelector(".spin");
+    getSpin.style.display = "inline-block";
+    const currentEmail = document.getElementById("updatePassEmail").value;
+    const newPass = document.getElementById("updatePassword").value;
+    const newConfirmPass = document.getElementById("confirmPassword").value;
+    if (currentEmail === "" || newPass === "" || newConfirmPass === "") {
+        Swal.fire({
+            icon: 'info',
+            text: 'All Fields Required!',
+            confirmButtonColor: '#2D85DE'
+        })
+        getSpin.style.display = "none";
+    }
+    if (newConfirmPass !== newPass) {
+        Swal.fire({
+            icon: 'info',
+            text: 'New password do not match',
+            confirmButtonColor: '#2D85DE'
+        })
+        getSpin.style.display = "none";
+    }
+    else {
+        const getToken = localStorage.getItem("admin");
+        const myToken = JSON.parse(getToken);
+        const token = myToken.token;
+        const dashHeader = new Headers();
+        dashHeader.append("Authorization", `Bearer ${token}`);
+        const catData = new FormData();
+        catData.append("email", currentEmail);
+        catData.append("password", newPass);
+        catData.append("password_confirmation", newConfirmPass);
+        const dashMethod = {
+            method: 'POST',
+            headers: dashHeader,
+            body: catData
+        }
+        const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/admin_update_password";
+        fetch(url, dashMethod)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            if (result.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#2D85DE'
+                })
+                setTimeout(() => {
+                    localStorage.clear();
+                    location.href = "index.html"
+                }, 3000)
+            }
+            else {
+                Swal.fire({
+                    icon: 'info',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#2D85DE'
+                })
+                getSpin.style.display = "none";
+            }
+        })
+        .catch(error => console.log('error', error));
+    }
+}
+
+// Learning material category dropdown
+function dropdownCat() {
+    const dropdownCont = document.querySelector("#nav-list");
+    let data = [];
+
+    const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/categorylist_dropdown"; 
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${bearerToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.length === 0) {
+            dropdownCont.innerText = `<h2> No categories found </h2>`
+        }
+        else {
+            result.forEach((object) => {
+            
+                data += `<h5>${object.parent_category.name}</h5>`;
+        
+                object.sub_category.forEach((element, j) => {
+                    data += `<p onclick="getMaterialId(${element.id})">${element.name}</p>
+                    <hr>`;
+                });
+            });
+            dropdownCont.innerHTML = data;
+        }
+    })
+    .catch(error => {
+        console.log('Error:', error)
+    })
+}
+function getMaterialId(matId) {
+    const matSubId = localStorage.setItem("matId", matId);
+    Swal.fire({
+        icon: 'success',
+        text: "Subcategory selected",
+        confirmButtonColor: "#2D85DE"
+    })
+}
+
+//display learning materials modal
+function displayLearnModal() {
+    const learnModal = document.querySelector('#my-modal');
+    learnModal.style.display = "block";
+}
+function closeModal2() {
+    const learnModal = document.querySelector('#my-modal');
+    learnModal.style.display = "none"; 
+}
+
+// Displaying customized form input
+function defaultLearning() {
+    const defaultForm = document.querySelector('.myDefault');
+    defaultForm.style.display = "block";
+    const readingForm = document.querySelector('.myReading');
+    readingForm.style.display = "none";
+    const convaForm = document.querySelector('.myConversation');
+    convaForm.style.display = "none";
+}
+function reading() {
+    const defaultForm = document.querySelector('.myDefault');
+    defaultForm.style.display = "none";
+    const convaForm = document.querySelector('.myConversation');
+    convaForm.style.display = "none";
+    const readingForm = document.querySelector('.myReading');
+    readingForm.style.display = "block";
+}
+function conversation() {
+    const defaultForm = document.querySelector('.myDefault');
+    defaultForm.style.display = "none";
+    const readingForm = document.querySelector('.myReading');
+    readingForm.style.display = "none";
+    const convaForm = document.querySelector('.myConversation');
+    convaForm.style.display = "block";
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function gotoLoginPage(event) {
     event.preventDefault;
