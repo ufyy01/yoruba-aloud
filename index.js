@@ -950,12 +950,27 @@ function closeModal2() {
 
 // Displaying customized form input
 function defaultLearning() {
+
     const defaultForm = document.querySelector('.myDefault');
     defaultForm.style.display = "block";
     const readingForm = document.querySelector('.myReading');
     readingForm.style.display = "none";
     const convaForm = document.querySelector('.myConversation');
     convaForm.style.display = "none";
+
+    let defaultBtn = document.querySelector('.default');
+    let readBtn = document.querySelector('.reading');
+    let convaBtn = document.querySelector('.conversation');
+
+    if (defaultForm.style.display === "block") {
+        defaultBtn.style.background = "#2D85DE";
+        defaultBtn.style.color = "#fff";
+        readBtn.style.background = "#fff";
+        readBtn.style.color = "#2D85DE";
+        convaBtn.style.background = "#fff";
+        convaBtn.style.color = "#2D85DE";
+    }
+    
 }
 function reading() {
     const defaultForm = document.querySelector('.myDefault');
@@ -964,6 +979,19 @@ function reading() {
     convaForm.style.display = "none";
     const readingForm = document.querySelector('.myReading');
     readingForm.style.display = "block";
+
+    let defaultBtn = document.querySelector('.default');
+    let readBtn = document.querySelector('.reading');
+    let convaBtn = document.querySelector('.conversation');
+
+    if (readingForm.style.display === "block") {
+        readBtn.style.background = "#2D85DE";
+        readBtn.style.color = "#fff";
+        defaultBtn.style.background = "#fff";
+        defaultBtn.style.color = "#2D85DE";
+        convaBtn.style.background = "#fff";
+        convaBtn.style.color = "#2D85DE";
+    }
 }
 function conversation() {
     const defaultForm = document.querySelector('.myDefault');
@@ -973,14 +1001,83 @@ function conversation() {
     const convaForm = document.querySelector('.myConversation');
     convaForm.style.display = "block";
 
+    let defaultBtn = document.querySelector('.default');
+    let readBtn = document.querySelector('.reading');
+    let convaBtn = document.querySelector('.conversation');
+
+    if (convaForm.style.display === "block") {
+        defaultBtn.style.background = "#fff";
+        defaultBtn.style.color = "#2D85DE";
+        readBtn.style.background = "#fff";
+        readBtn.style.color = "#2D85DE";
+        convaBtn.style.background = "#2D85DE";
+        convaBtn.style.color = "#fff";
+    }
+}  
+
+//Create Default learning material
+function createDefaultLearning(event) {
+    event.preventDefault();
+    const defaultName = document.querySelector('#title').value;
+    const defaultImage = document.querySelector('#img1').files[0];
+    const defaultAudio = document.querySelector('#audio').files[0];
+    const defaultSpin = document.querySelector('.spin');
+    defaultSpin.style.display = "inline-block";
+
+    let subCatId = localStorage.getItem("matId");
+    subCatId = JSON.parse(subCatId);
+    console.log(subCatId);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${bearerToken}`);
+
+    const formdata = new FormData();
+    formdata.append("title", defaultName);
+    formdata.append("image", defaultImage);
+    formdata.append("audio", defaultAudio);
+    formdata.append("subcategory_id", subCatId);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+    };
+
+    const url = "https://pluralcodesandbox.com/yorubalearning/api/create_defaultlearning";
+
+    if (defaultName === "") {
+        Swal.fire({
+            icon: 'info',
+            text: "All Fields Required",
+            confirmButtonColor: '#2D85DE'
+        }) 
+        defaultSpin.style.display = "none";
+    }
+    else {
+        fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+        console.log(result)
+        if (result.status === "success") {
+            Swal.fire({
+                icon: 'success',
+                text: `${result.message}`,
+                confirmButtonColor: '#2D85DE'
+            })
+            defaultSpin.style.display = "none";
+        }else{
+            Swal.fire({
+                icon: 'info',
+                text: `${result.message}`,
+                confirmButtonColor: '#2D85DE'
+            })
+            defaultSpin.style.display = "none";
+        }
+        })
+        .catch(error => console.log('error', error));
+    }
 }
-
-
-
-
-
-
-
 
 
 
