@@ -131,17 +131,23 @@ function logIn(event) {
 }
 
 // Dashboard on load
+function getBearerToken(){
+    const adminId = document.getElementById("adminId");
+    let adminDetails = localStorage.getItem("admin");
+    adminDetails = JSON.parse(adminDetails);
+    const bearerToken = adminDetails.token;
+    return bearerToken;
+}
 
-const adminId = document.getElementById("adminId");
-let adminDetails = localStorage.getItem("admin");
-adminDetails = JSON.parse(adminDetails);
-const bearerToken = adminDetails.token;
 
 
 function dashboardApi() {
     const getModal = document.querySelector('.pagemodal');
     getModal.style.display= "block";
     
+    const adminId = document.getElementById("adminId");
+    let adminDetails = localStorage.getItem("admin");
+    adminDetails = JSON.parse(adminDetails);
     adminId.innerText = `Hello ${adminDetails.name}!`;
 
     //Get dashboard details
@@ -150,7 +156,7 @@ function dashboardApi() {
     fetch(url, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${bearerToken}`,
+            'Authorization': `Bearer ${getBearerToken()}`,
             'Content-Type': 'application/json'
         }
     })
@@ -188,7 +194,7 @@ function studentModal(event) {
     fetch(url1, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${bearerToken}`,
+            'Authorization': `Bearer ${getBearerToken()}`,
             'Content-Type': 'application/json'
         }
     })
@@ -253,7 +259,7 @@ function tabledataApi() {
     fetch(url2, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${bearerToken}`,
+            'Authorization': `Bearer ${getBearerToken()}`,
             'Content-Type': 'application/json'
         }
     })
@@ -305,7 +311,7 @@ function createCategory(event) {
         getSpin.style.display = "none";
     } else {
         const getHeader = new Headers();
-        getHeader.append('Authorization', `Bearer ${bearerToken}`);
+        getHeader.append('Authorization', `Bearer ${getBearerToken()}`);
         
         const catData = new FormData();
         catData.append("name", catName);
@@ -362,7 +368,7 @@ function getCategoryList() {
     fetch(url, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${bearerToken}`,
+            'Authorization': `Bearer ${getBearerToken()}`,
             'Content-Type': 'application/json'
         }
     })
@@ -410,7 +416,7 @@ function modalBox(catId) {
     const getUpName = document.getElementById("updateName");
 
     const getHeader = new Headers();
-    getHeader.append('Authorization', `Bearer ${bearerToken}`);
+    getHeader.append('Authorization', `Bearer ${getBearerToken()}`);
     
 
     const catMethod = {
@@ -451,7 +457,7 @@ function updateCategory(event) {
         }
         else {
             const dashHeader = new Headers();
-            dashHeader.append("Authorization", `Bearer ${bearerToken}`);
+            dashHeader.append("Authorization", `Bearer ${getBearerToken()}`);
 
             const catData = new FormData();
             catData.append("name", catName);
@@ -504,7 +510,7 @@ function deleteCat(catIdDel) {
         if (result.isConfirmed){
 
             const dashHeader = new Headers();
-            dashHeader.append("Authorization", `Bearer ${bearerToken}`);
+            dashHeader.append("Authorization", `Bearer ${getBearerToken()}`);
 
             const dashMethod = {
                 method: 'GET',
@@ -573,7 +579,7 @@ function subCategory(event) {
         getSpin.style.display = "none";
     } else {
         const getHeader = new Headers();
-        getHeader.append('Authorization', `Bearer ${bearerToken}`);
+        getHeader.append('Authorization', `Bearer ${getBearerToken()}`);
         
         const catData = new FormData();
         catData.append("name", subCatName);
@@ -636,7 +642,7 @@ function getSubcategoryList() {
     fetch(url, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${bearerToken}`,
+            'Authorization': `Bearer ${getBearerToken()}`,
             'Content-Type': 'application/json'
         }
     })
@@ -681,7 +687,7 @@ function modalSubcat(subcatId) {
     const updateSubName = document.getElementById("updateSubName");
 
     const getHeader = new Headers();
-    getHeader.append('Authorization', `Bearer ${bearerToken}`);
+    getHeader.append('Authorization', `Bearer ${getBearerToken()}`);
     
 
     const catMethod = {
@@ -729,7 +735,7 @@ function updateSubCategory(event) {
         }
         else {
             const dashHeader = new Headers();
-            dashHeader.append("Authorization", `Bearer ${bearerToken}`);
+            dashHeader.append("Authorization", `Bearer ${getBearerToken()}`);
 
             const subcatData = new FormData();
             subcatData.append("name", updateSubName);
@@ -903,7 +909,7 @@ function dropdownCat() {
     fetch(url, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${bearerToken}`,
+            'Authorization': `Bearer ${getBearerToken()}`,
             'Content-Type': 'application/json'
         }
     })
@@ -1030,7 +1036,7 @@ function createDefaultLearning(event) {
 
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${bearerToken}`);
+    myHeaders.append("Authorization", `Bearer ${getBearerToken()}`);
 
     const formdata = new FormData();
     formdata.append("title", defaultName);
@@ -1044,7 +1050,7 @@ function createDefaultLearning(event) {
         body: formdata,
     };
 
-    const url = "https://pluralcodesandbox.com/yorubalearning/api/create_defaultlearning";
+    const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/create_defaultlearning";
 
     if (defaultName === "") {
         Swal.fire({
@@ -1080,8 +1086,145 @@ function createDefaultLearning(event) {
 }
 
 
+function createReadingMat(event) {
+    event.preventDefault();
 
+    const englishText = document.querySelector('#englishText').value;
+    const yorubaText = document.querySelector('#yorubaText').value;
+    const readingImg = document.querySelector('#img2').files[0];
+    const readingAud = document.querySelector('#audio2').files[0];
 
+    const defaultSpin = document.getElementById('sspin');
+    defaultSpin.style.display = "inline-block";
+
+    let subCatId = localStorage.getItem("matId");
+    subCatId = JSON.parse(subCatId);
+    console.log(subCatId);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${getBearerToken()}`);
+
+    const formdata = new FormData();
+    formdata.append("words_in_english", englishText);
+    formdata.append("words_in_yoruba", yorubaText);
+    formdata.append("image", readingImg);
+    formdata.append("audio", readingAud);
+    formdata.append("subcategory_id", subCatId);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+    };
+
+    const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/create_readingmaterial";
+
+    if (englishText === "" || yorubaText === "" ) {
+        Swal.fire({
+            icon: 'info',
+            text: "All Fields Required",
+            confirmButtonColor: '#2D85DE'
+        }) 
+        defaultSpin.style.display = "none";
+    }
+    else {
+        fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            if (result.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    text: `${result.message}`,
+                    confirmButtonColor: '#2D85DE'
+                })
+                defaultSpin.style.display = "none";
+            }else{
+                Swal.fire({
+                icon: 'info',
+                text: `${result.status}`,
+                confirmButtonColor: '#2D85DE'
+                })
+                defaultSpin.style.display = "none";
+            }
+        })
+        .catch(error => console.log('error', error));
+    }
+}
+
+ function createConversation(event) {
+    event.preventDefault();
+
+    const englishQuest = document.getElementById('englishQues').value;
+    const yorubaQuest = document.getElementById('yorubaQues').value;
+    const englishAns = document.getElementById('englishAns').value;
+    const yorubaAns = document.getElementById('yorubaAns').value;
+    const yorubaAudQues = document.querySelector('#audio3').files[0];
+    const yorubaAudAns = document.querySelector('#audio4').files[0];
+    const yorubaImg = document.querySelector('#img3').files[0];
+
+    const defaultSpin = document.getElementById('spinn');
+    defaultSpin.style.display = "inline-block";
+
+    let subCatId = localStorage.getItem("matId");
+    subCatId = JSON.parse(subCatId);
+    console.log(subCatId);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${getBearerToken()}`);
+
+    const formdata = new FormData();
+    formdata.append("conversation_english_question", englishQuest);
+    formdata.append("conversation_yoruba_question", yorubaQuest);
+    formdata.append("conversation_english_answer", englishAns);
+    formdata.append("conversation_yoruba_answer", yorubaAns);
+    formdata.append("conversation_audio_question_inyoruba", yorubaAudQues);
+    formdata.append("conversation_audio_answer_inyoruba", yorubaAudAns);
+    formdata.append("subcategory_id", subCatId);
+    formdata.append("image", yorubaImg);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+    };
+
+    const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/create_learningconversation";
+
+    if (englishQuest === "" || yorubaQuest === "") {
+        Swal.fire({
+            icon: 'info',
+            text: "All Fields Required",
+            confirmButtonColor: '#2D85DE'
+        }) 
+        defaultSpin.style.display = "none";
+    }
+    else {
+        fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result)
+            if (result.status === "success") {
+                Swal.fire({
+                    icon: 'success',
+                    text: `${result.status}`,
+                    confirmButtonColor: '#2D85DE'
+                })
+                defaultSpin.style.display = "none";
+            }else{
+                Swal.fire({
+                icon: 'info',
+                text: `${result.status}`,
+                confirmButtonColor: '#2D85DE'
+                })
+                defaultSpin.style.display = "none";
+            }
+        })
+        .catch(error => console.log('error', error));
+    }
+ }
 
 
 
