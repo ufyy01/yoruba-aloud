@@ -916,15 +916,15 @@ function dropdownCat() {
     .then(response => response.json())
     .then(result => {
         if (result.length === 0) {
-            dropdownCont.innerText = `<h2> No categories found </h2>`
+            dropdownCont.innerText = `No categories found`;
         }
         else {
             result.forEach((object) => {
             
                 data += `<h5>${object.parent_category.name}</h5>`;
         
-                object.sub_category.forEach((element, j) => {
-                    data += `<p onclick="getMaterialId(${element.id})">${element.name}</p>
+                object.sub_category.forEach((element) => {
+                    data += `<p class="subcat" onclick="getMaterialId(${element.id})">${element.name}</p>
                     <hr>`;
                 });
             });
@@ -937,11 +937,83 @@ function dropdownCat() {
 }
 function getMaterialId(matId) {
     const matSubId = localStorage.setItem("matId", matId);
+    let catId = localStorage.getItem("matId");
+    subCatId = JSON.parse(catId);
+    
     Swal.fire({
         icon: 'success',
         text: "Subcategory selected",
         confirmButtonColor: "#2D85DE"
     })
+
+    // const params = new URLSearchParams(window.location.search);
+    // let getId = params.get('subcategory_id');
+
+    const learningMatCont = document.querySelector(".overboard");
+    learningMatCont.style.backgroundColor = "pink";
+    console.log(learningMatCont)
+
+    let data = [];
+
+    const url = `https://pluralcodesandbox.com/yorubalearning/api/admin/list_all_learning_materials?subcategory_id=${subCatId}&limit=2&skip=2`; 
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${getBearerToken()}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        if (result.lenght === 0) {
+            learningMatCont.innerText = "No learning material available. Click the create material button to create a learning material"
+        }
+        else {
+            if (result.type === "reading") {
+                result.map(item => {
+                    data += `
+                    <div class="searchcard">
+                    <img src="${item.image_file}" alt="learning material" class="searchcard-img" >
+                    <div class="searchcard-info">
+                    <p>${item.reading_word_in_english}</p>
+                    <hr>
+                    <p>${item.reading_word_in_yoruba}</p>
+                    <audio controls>
+                    <source scr="${item.audio_file}" type="audio/mp3">
+                    </audio>
+                    </div>
+                    <button class="update-button" onclick="readingModal(${item.id})">Update</button>
+                    <button class="delete-button" onclick="deleteRead(${item.id})">Delete</button>
+                    </div>
+                    `
+                })
+
+                learningMatCont.innerHTML = data;
+            }
+            // if (result.type === "") {
+            //     result.map(item => {
+            //         data += `
+            //         <div class="searchcard">
+            //         <img src="${item.image_file}" alt="learning material" class="searchcard-img" >
+            //         <div class="searchcard-info">
+            //         <p>${item.reading_word_in_english}</p>
+            //         <hr>
+            //         <p>${item.reading_word_in_yoruba}</p>
+            //         <audio controls>
+            //         <source scr="${item.audio_file}" type="audio/mp3">
+            //         </audio>
+            //         </div>
+            //         <button class="update-button" onclick="readingModal(${item.id})">Update</button>
+            //         <button class="delete-button" onclick="deleteRead(${item.id})">Delete</button>
+            //         </div>
+            //         `
+            //     })
+        }
+        
+    })
+    .catch(error => console.log("error", error));
 }
 
 //display learning materials modal
@@ -1024,19 +1096,19 @@ function conversation() {
 //Create Default learning material
 function createDefaultLearning(event) {
     event.preventDefault();
-    const defaultName = document.querySelector('#title').value;
-    const defaultImage = document.querySelector('#img1').files[0];
-    const defaultAudio = document.querySelector('#audio').files[0];
-    const defaultSpin = document.querySelector('.spin');
+    const defaultName = document.querySelector("#title").value;
+    const defaultImage = document.querySelector("#img1").files[0];
+    const defaultAudio = document.querySelector("#audio").files[0];
+
+    const defaultSpin = document.querySelector(".spin");
     defaultSpin.style.display = "inline-block";
 
-    let subCatId = localStorage.getItem("matId");
-    subCatId = JSON.parse(subCatId);
+    let catId = localStorage.getItem("matId");
+    subCatId = JSON.parse(catId);
     console.log(subCatId);
 
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", `Bearer ${getBearerToken()}`);
+    const myHeader = new Headers();
+    myHeader.append("Authorization", `Bearer ${getBearerToken()}`);
 
     const formdata = new FormData();
     formdata.append("title", defaultName);
@@ -1046,8 +1118,8 @@ function createDefaultLearning(event) {
 
     const requestOptions = {
         method: 'POST',
-        headers: myHeaders,
-        body: formdata,
+        headers: myHeader,
+        body: formdata
     };
 
     const url = "https://pluralcodesandbox.com/yorubalearning/api/admin/create_defaultlearning";
@@ -1072,10 +1144,12 @@ function createDefaultLearning(event) {
                 confirmButtonColor: '#2D85DE'
             })
             defaultSpin.style.display = "none";
-        }else{
+            setTimeout(() => {location.reload()}, 3000)
+        }
+        else{
             Swal.fire({
                 icon: 'info',
-                text: `${result.message}`,
+                text: `${result.status}`,
                 confirmButtonColor: '#2D85DE'
             })
             defaultSpin.style.display = "none";
@@ -1089,10 +1163,10 @@ function createDefaultLearning(event) {
 function createReadingMat(event) {
     event.preventDefault();
 
-    const englishText = document.querySelector('#englishText').value;
-    const yorubaText = document.querySelector('#yorubaText').value;
-    const readingImg = document.querySelector('#img2').files[0];
-    const readingAud = document.querySelector('#audio2').files[0];
+    const englishText = document.getElementById("englishText").value;
+    const yorubaText = document.getElementById("yorubaText").value;
+    const readingImg = document.getElementById("img2").files[0];
+    const readingAud = document.getElementById("audio2").files[0];
 
     const defaultSpin = document.getElementById('sspin');
     defaultSpin.style.display = "inline-block";
@@ -1102,7 +1176,6 @@ function createReadingMat(event) {
     console.log(subCatId);
 
     const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${getBearerToken()}`);
 
     const formdata = new FormData();
@@ -1127,6 +1200,9 @@ function createReadingMat(event) {
             confirmButtonColor: '#2D85DE'
         }) 
         defaultSpin.style.display = "none";
+
+        setTimeout(() => {location.reload()}, 3000)
+
     }
     else {
         fetch(url, requestOptions)
@@ -1156,23 +1232,22 @@ function createReadingMat(event) {
  function createConversation(event) {
     event.preventDefault();
 
-    const englishQuest = document.getElementById('englishQues').value;
-    const yorubaQuest = document.getElementById('yorubaQues').value;
-    const englishAns = document.getElementById('englishAns').value;
-    const yorubaAns = document.getElementById('yorubaAns').value;
-    const yorubaAudQues = document.querySelector('#audio3').files[0];
-    const yorubaAudAns = document.querySelector('#audio4').files[0];
-    const yorubaImg = document.querySelector('#img3').files[0];
+    const englishQuest = document.getElementById("englishQues").value;
+    const yorubaQuest = document.getElementById("yorubaQues").value;
+    const englishAns = document.getElementById("englishAns").value;
+    const yorubaAns = document.getElementById("yorubaAns").value;
+    const yorubaAudQues = document.querySelector("#audio3").files[0];
+    const yorubaAudAns = document.querySelector("#audio4").files[0];
+    const yorubaImg = document.querySelector("#img3").files[0];
 
     const defaultSpin = document.getElementById('spinn');
     defaultSpin.style.display = "inline-block";
 
     let subCatId = localStorage.getItem("matId");
-    subCatId = JSON.parse(subCatId);
-    console.log(subCatId);
+    matCatId = JSON.parse(subCatId);
+    console.log(matCatId);
 
     const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${getBearerToken()}`);
 
     const formdata = new FormData();
@@ -1182,7 +1257,7 @@ function createReadingMat(event) {
     formdata.append("conversation_yoruba_answer", yorubaAns);
     formdata.append("conversation_audio_question_inyoruba", yorubaAudQues);
     formdata.append("conversation_audio_answer_inyoruba", yorubaAudAns);
-    formdata.append("subcategory_id", subCatId);
+    formdata.append("subcategory_id", matCatId);
     formdata.append("image", yorubaImg);
 
     const requestOptions = {
@@ -1213,6 +1288,9 @@ function createReadingMat(event) {
                     confirmButtonColor: '#2D85DE'
                 })
                 defaultSpin.style.display = "none";
+
+                setTimeout(() => {location.reload()}, 3000)
+
             }else{
                 Swal.fire({
                 icon: 'info',
@@ -1226,7 +1304,10 @@ function createReadingMat(event) {
     }
  }
 
+// function getLearningMaterials() {
 
+   
+// }
 
 function gotoLoginPage(event) {
     event.preventDefault;

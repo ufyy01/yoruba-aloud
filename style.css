@@ -635,7 +635,12 @@ table td {
 }
 
 #nav-list {
-    padding: 20px;
+    padding: 15px;
+
+}
+
+.subcat {
+    cursor: pointer;
 }
 
 hr {
@@ -648,18 +653,19 @@ hr {
 }
 
 .container-over {
-    min-height: 100vh;
+    min-height: 50vh;
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     flex-direction: column;
 }
 
 .overboard, .overQuiz {
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     align-items: center;
     flex-wrap: wrap;
+    background-color: pink;
 }
 
 @media screen and (max-width: 650px) {
