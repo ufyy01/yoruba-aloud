@@ -653,7 +653,7 @@ hr {
 }
 
 .container-over {
-    min-height: 50vh;
+    min-height: 80vh;
     display: flex;
     /* justify-content: center; */
     align-items: center;
@@ -665,7 +665,6 @@ hr {
     /* justify-content: space-around; */
     align-items: center;
     flex-wrap: wrap;
-    background-color: pink;
 }
 
 @media screen and (max-width: 650px) {

@@ -946,12 +946,7 @@ function getMaterialId(matId) {
         confirmButtonColor: "#2D85DE"
     })
 
-    // const params = new URLSearchParams(window.location.search);
-    // let getId = params.get('subcategory_id');
-
     const learningMatCont = document.querySelector(".overboard");
-    learningMatCont.style.backgroundColor = "pink";
-    console.log(learningMatCont)
 
     let data = [];
 
@@ -967,51 +962,88 @@ function getMaterialId(matId) {
     .then(response => response.json())
     .then(result => {
         console.log(result)
-        if (result.lenght === 0) {
-            learningMatCont.innerText = "No learning material available. Click the create material button to create a learning material"
+        if (result.length === 0) {
+            learningMatCont.innerHTML = `<h5 class="my-5 text-center"> No learning material available for seleted subcategory.<br>
+            Click the create materials button to create a learning material</h5>`;
+
+            console.log(learningMatCont)
         }
         else {
-            if (result.type === "reading") {
-                result.map(item => {
+            result.map(item => {
+                if (item.type === "reading") {
                     data += `
                     <div class="searchcard">
-                    <img src="${item.image_file}" alt="learning material" class="searchcard-img" >
+                    <img src="${item.image_file}" alt="learning material" class="searchcard-img my-3" >
                     <div class="searchcard-info">
-                    <p>${item.reading_word_in_english}</p>
+                    <p> Word in English: ${item.reading_word_in_english}</p>
                     <hr>
-                    <p>${item.reading_word_in_yoruba}</p>
+                    <p> Word in Yoruba: ${item.reading_word_in_yoruba}</p>
+                    <hr>
                     <audio controls>
                     <source scr="${item.audio_file}" type="audio/mp3">
                     </audio>
                     </div>
+                    <div class="text-center mb-3">
                     <button class="update-button" onclick="readingModal(${item.id})">Update</button>
                     <button class="delete-button" onclick="deleteRead(${item.id})">Delete</button>
                     </div>
+                    </div>
                     `
-                })
+                }
+                if (item.type === "default") {
+                    data += `
+                    <div class="searchcard">
+                    <img src="${item.image_file}" alt="learning material" class="searchcard-img my-3" >
+                    <div class="searchcard-info">
+                    <p>Title: ${item.title}</p>
+                    <hr>
+                    <audio controls>
+                    <source scr="${item.audio_file}" type="audio/mp3">
+                    </audio>
+                    </div>
+                    <div class="text-center mb-3">
+                    <button class="update-button" onclick="readingModal(${item.id})">Update</button>
+                    <button class="delete-button" onclick="deleteRead(${item.id})">Delete</button>
+                    </div>
+                    </div>
+                    `
+                }
+                if (item.type === "conversation") {
+                    data += `
+                    <div class="searchcard">
+                    <img src="${item.image_file}" alt="learning material" class="searchcard-img my-3" >
+                    <div class="searchcard-info">
+                    <p> Question in Yoruba: ${item.conversation_yoruba_question}</p>
+                    <hr>
+                    <p> Question in English: ${item.conversation_english_question}</p>
+                    <hr>
+                    <p> Answer in Yoruba: ${item.conversation_yoruba_answer}</p>
+                    <hr>
+                    <p> Answer in English ${item.conversation_english_answer}</p>
+                    <hr>
+                    <p>Question</p>
+                    <audio controls>
+                    <source scr="${item.conversation_audio_question_inyoruba}" type="audio/mp3">
+                    </audio>
+                    <hr>
+                    <p>Answer</p>
+                    <audio controls>
+                    <source scr="${item.conversation_audio_answer_inyoruba}" type="audio/mp3">
+                    </audio>
+                    </div>
+                    <div class="text-center mb-3">
+                    <button class="update-button" onclick="readingModal(${item.id})">Update</button>
+                    <button class="delete-button" onclick="deleteRead(${item.id})">Delete</button>
+                    </div>
+                    </div>
+                    `
+                }
+            })
+            
 
-                learningMatCont.innerHTML = data;
-            }
-            // if (result.type === "") {
-            //     result.map(item => {
-            //         data += `
-            //         <div class="searchcard">
-            //         <img src="${item.image_file}" alt="learning material" class="searchcard-img" >
-            //         <div class="searchcard-info">
-            //         <p>${item.reading_word_in_english}</p>
-            //         <hr>
-            //         <p>${item.reading_word_in_yoruba}</p>
-            //         <audio controls>
-            //         <source scr="${item.audio_file}" type="audio/mp3">
-            //         </audio>
-            //         </div>
-            //         <button class="update-button" onclick="readingModal(${item.id})">Update</button>
-            //         <button class="delete-button" onclick="deleteRead(${item.id})">Delete</button>
-            //         </div>
-            //         `
-            //     })
-        }
+            learningMatCont.innerHTML = data;
         
+        }
     })
     .catch(error => console.log("error", error));
 }
@@ -1304,9 +1336,73 @@ function createReadingMat(event) {
     }
  }
 
-// function getLearningMaterials() {
+//  function getLearningMat() {
+//     const learningMatCont = document.querySelector(".overboard");
+//     learningMatCont.style.backgroundColor = "pink";
+//     console.log(learningMatCont)
 
-   
+//     let data = [];
+
+//     const url = `https://pluralcodesandbox.com/yorubalearning/api/admin/list_all_learning_materials?subcategory_id=${subCatId}&limit=2&skip=2`; 
+
+//     fetch(url, {
+//         method: 'GET',
+//         headers: {
+//             'Authorization': `Bearer ${getBearerToken()}`,
+//             'Content-Type': 'application/json'
+//         }
+//     })
+//     .then(response => response.json())
+//     .then(result => {
+//         console.log(result)
+//         if (result.lenght === 0) {
+//             learningMatCont.innerText = "No learning material available. Click the create material button to create a learning material"
+//         }
+//         else {
+//             if (result.type === "reading") {
+//                 result.map(item => {
+//                     data += `
+//                     <div class="searchcard">
+//                     <img src="${item.image_file}" alt="learning material" class="searchcard-img" >
+//                     <div class="searchcard-info">
+//                     <p>${item.reading_word_in_english}</p>
+//                     <hr>
+//                     <p>${item.reading_word_in_yoruba}</p>
+//                     <audio controls>
+//                     <source scr="${item.audio_file}" type="audio/mp3">
+//                     </audio>
+//                     </div>
+//                     <button class="update-button" onclick="readingModal(${item.id})">Update</button>
+//                     <button class="delete-button" onclick="deleteRead(${item.id})">Delete</button>
+//                     </div>
+//                     `
+//                 })
+
+//                 learningMatCont.innerHTML = data;
+//             }
+//             if (result.type === "") {
+//                 result.map(item => {
+//                     data += `
+//                     <div class="searchcard">
+//                     <img src="${item.image_file}" alt="learning material" class="searchcard-img" >
+//                     <div class="searchcard-info">
+//                     <p>${item.reading_word_in_english}</p>
+//                     <hr>
+//                     <p>${item.reading_word_in_yoruba}</p>
+//                     <audio controls>
+//                     <source scr="${item.audio_file}" type="audio/mp3">
+//                     </audio>
+//                     </div>
+//                     <button class="update-button" onclick="readingModal(${item.id})">Update</button>
+//                     <button class="delete-button" onclick="deleteRead(${item.id})">Delete</button>
+//                     </div>
+//                     `
+//                 })
+//         }
+        
+//         }
+//     })
+//     .catch(error => console.log("error", error));
 // }
 
 function gotoLoginPage(event) {
